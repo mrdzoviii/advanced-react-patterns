@@ -4,29 +4,36 @@
 import * as React from 'react'
 import {Switch} from '../switch'
 
-function Toggle() {
+function Toggle({children}) {
   const [on, setOn] = React.useState(false)
   const toggle = () => setOn(!on)
-
+  console.log(children)
   // 🐨 replace this with a call to React.Children.map and map each child in
   // props.children to a clone of that child with the props they need using
   // React.cloneElement.
+  const mappedChildren = React.Children.map(children, (child, index) => {
+    if (typeof child === 'object' && typeof child.type === 'function') {
+      return React.cloneElement(child, {on: on, toggle: toggle})
+    }
+    return child
+  })
+
   // 💰 React.Children.map(props.children, child => {/* return child clone here */})
   // 📜 https://reactjs.org/docs/react-api.html#reactchildren
   // 📜 https://reactjs.org/docs/react-api.html#cloneelement
-  return <Switch on={on} onClick={toggle} />
+  return mappedChildren
 }
 
 // 🐨 Flesh out each of these components
 
 // Accepts `on` and `children` props and returns `children` if `on` is true
-const ToggleOn = () => null
+const ToggleOn = ({on, children}) => (on ? children : null)
 
 // Accepts `on` and `children` props and returns `children` if `on` is false
-const ToggleOff = () => null
+const ToggleOff = ({on, children}) => (!on ? children : null)
 
 // Accepts `on` and `toggle` props and returns the <Switch /> with those props.
-const ToggleButton = () => null
+const ToggleButton = ({on, toggle}) => <Switch on={on} onClick={toggle} />
 
 function App() {
   return (
@@ -35,6 +42,8 @@ function App() {
         <ToggleOn>The button is on</ToggleOn>
         <ToggleOff>The button is off</ToggleOff>
         <ToggleButton />
+        test
+        <span>hello</span>
       </Toggle>
     </div>
   )
